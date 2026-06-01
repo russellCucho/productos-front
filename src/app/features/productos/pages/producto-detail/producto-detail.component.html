@@ -1,0 +1,74 @@
+<div class="container mt-5" style="max-width: 800px;">
+
+  <div class="mb-3">
+    <a routerLink="/productos" class="btn btn-link text-secondary p-0 fw-semibold text-decoration-none">
+      <i class="bi bi-arrow-left"></i> Volver al listado
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm" *ngIf="producto() as p">
+
+    <div class="card-header bg-dark text-white p-4 d-flex justify-content-between align-items-center">
+      <div>
+        <span class="text-muted small fw-bold">ID PRODUCTO: #{{ p.idProducto }}</span>
+        <h3 class="mb-0 fw-bold mt-1">{{ p.nombre }}</h3>
+      </div>
+      <span class="badge rounded-pill px-3 py-2 fw-bold fs-6"
+        [ngClass]="p.estado === 'A' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+        {{ p.estado === 'A' ? 'ACTIVE' : 'INACTIVE' }}
+      </span>
+    </div>
+
+    <div class="card-body p-4">
+
+      <h5 class="text-primary fw-bold mb-3 border-bottom pb-2">Información Técnica</h5>
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-md-4">
+          <div class="small text-muted fw-semibold">Código Único</div>
+          <div class="fs-5 text-dark fw-bold mt-1">{{ p.codigo }}</div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="small text-muted fw-semibold">Marca</div>
+          <div class="fs-5 text-dark mt-1">{{ p.marca }}</div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="small text-muted fw-semibold">Modelo</div>
+          <div class="fs-5 text-dark mt-1">{{ p.modelo }}</div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="small text-muted fw-semibold">Precio de Venta</div>
+          <div class="fs-5 fw-bold text-success mt-1">S/. {{ p.precio | number:'1.2-2' }}</div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="small text-muted fw-semibold">Stock en Almacén</div>
+          <div class="fs-5 fw-bold mt-1" [ngClass]="p.stock > 0 ? 'text-dark' : 'text-danger'">
+            {{ p.stock }} unidades
+          </div>
+        </div>
+      </div>
+
+      <h5 class="text-secondary fw-bold mb-3 border-bottom pb-2">Auditoría de Base de Datos</h5>
+      <div class="row g-3 bg-light p-3 rounded-3">
+        <div class="col-md-6">
+          <div class="small text-muted fw-semibold"><i class="bi bi-calendar-plus"></i> Fecha de Creación</div>
+          <div class="text-dark mt-1 fw-semibold">{{ p.fechaCreacion | date:'dd/MM/yyyy - hh:mm a' }}</div>
+        </div>
+        <div class="col-md-6">
+          <div class="small text-muted fw-semibold"><i class="bi bi-calendar-range"></i> Última Modificación</div>
+          <div class="text-dark mt-1 fw-semibold">
+            {{ p.fechaModif ? (p.fechaModif | date:'dd/MM/yyyy - hh:mm a') : 'Sin modificaciones registradas' }}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card-footer bg-white p-3 border-top d-flex justify-content-end">
+      <a [routerLink]="['/productos/editar', p.idProducto]" class="btn btn-warning px-4 fw-semibold shadow-sm">
+        <i class="bi bi-pencil-fill"></i> Editar este Producto
+      </a>
+    </div>
+
+  </div>
+
+</div>

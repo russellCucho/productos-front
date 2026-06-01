@@ -1,0 +1,92 @@
+<div class="container mt-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="text-dark fw-bold mb-0">Gestión de Productos</h2>
+    </div>
+    <a routerLink="/productos/nuevo" class="btn btn-primary px-4 fw-semibold shadow-sm">
+      + Nuevo Producto
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4 bg-light">
+    <div class="card-body row g-3">
+      <div class="col-md-5">
+        <label class="form-label small fw-semibold text-muted">Filtrar por Marca</label>
+        <input type="text" class="form-control" placeholder="Ej. Asus, Huawei...">
+      </div>
+      <div class="col-md-5">
+        <label class="form-label small fw-semibold text-muted">Filtrar por Modelo</label>
+        <input type="text" class="form-control" placeholder="Ej. TUF, PLO...">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-outline-secondary w-100 fw-semibold">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="">
+          <tr>
+            <th class="ps-3">ID</th>
+            <th>Código</th>
+            <th>Nombre Completo</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th class="text-center">Precio</th>
+            <th class="text-center">Stock</th>
+            <th class="text-center pe-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of productosSimulados">
+            <td>#{{ p.idProducto }}</td>
+            <td>{{ p.codigo }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.marca }}</td>
+            <td>{{ p.modelo }}</td>
+            <td>S/. {{ p.precio | number:'1.2-2' }}</td>
+            <td class="text-center">{{ p.stock }} unids</td>
+            <td class="text-center pe-3">
+              <div class="btn-group btn-group-sm">
+                <a [routerLink]="['/productos/detalle', p.idProducto]" class="btn btn-outline-info"
+                  title="Ver Auditoría">
+                  <i class="bi bi-eye-fill"></i>
+                </a>
+                <a [routerLink]="['/productos/editar', p.idProducto]" class="btn btn-outline-warning"
+                  title="Editar Registro">
+                  <i class="bi bi-pencil-fill"></i>
+                </a>
+                <button class="btn btn-outline-danger" title="Borrado Lógico"
+                (click)="confirmarEliminacion(p.idProducto, p.nombre)">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top-0">
+        <div class="small text-muted">
+          Mostrando <span class="fw-semibold">5</span> de <span class="fw-semibold">14</span> registros en total
+        </div>
+        <nav aria-label="Navegación de productos">
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item active" aria-current="page">
+              <span class="page-link">1</span>
+            </li>
+            <li class="page-item">
+              <button class="page-link">2</button>
+            </li>
+            <li class="page-item">
+              <button class="page-link">3</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+</div>

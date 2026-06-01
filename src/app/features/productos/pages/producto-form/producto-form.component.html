@@ -1,0 +1,80 @@
+<div class="container mt-5" style="max-width: 700px;">
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-dark text-white py-3">
+      <h4 class="mb-0 fw-bold">
+        {{ mode() === FormModeEnum.CREAR ? 'Registrar Nuevo Producto' : 'Modificar Producto Existente' }}
+      </h4>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="productoForm" (ngSubmit)="guardar()">
+
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-muted">Código del Producto</label>
+            <input type="text" class="form-control" formControlName="codigo" placeholder="Ej. PROD-001"
+              [ngClass]="{'is-invalid': getErrorMessage('codigo')}">
+            <div class="invalid-feedback">{{ getErrorMessage('codigo') }}</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-muted">Nombre del Producto</label>
+            <input type="text" class="form-control" formControlName="nombre" placeholder="Ej. Monitor Gamer"
+              [ngClass]="{'is-invalid': getErrorMessage('nombre')}">
+            <div class="invalid-feedback">{{ getErrorMessage('nombre') }}</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-muted">Marca</label>
+            <input type="text" class="form-control" formControlName="marca" placeholder="Ej. Asus"
+              [ngClass]="{'is-invalid': getErrorMessage('marca')}">
+            <div class="invalid-feedback">{{ getErrorMessage('marca') }}</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-muted">Modelo</label>
+            <input type="text" class="form-control" formControlName="modelo" placeholder="Ej. TUF Gaming"
+              [ngClass]="{'is-invalid': getErrorMessage('modelo')}">
+            <div class="invalid-feedback">{{ getErrorMessage('modelo') }}</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-muted">Precio (S/.)</label>
+            <input type="number" step="0.01" class="form-control" formControlName="precio"
+              [ngClass]="{'is-invalid': getErrorMessage('precio')}">
+            <div class="invalid-feedback">{{ getErrorMessage('precio') }}</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-muted">Stock Disponible</label>
+            <input type="number" class="form-control" formControlName="stock"
+              [ngClass]="{'is-invalid': getErrorMessage('stock')}">
+            <div class="invalid-feedback">{{ getErrorMessage('stock') }}</div>
+          </div>
+
+          <div class="col-12" *ngIf="mode() === FormModeEnum.EDITAR">
+            <label class="form-label small fw-semibold text-muted">Estado del Registro</label>
+            <select class="form-select" formControlName="estado">
+              <option value="A">Activo</option>
+              <option value="I">Inactivo</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-3">
+          <a routerLink="/productos" class="btn btn-outline-secondary px-4 fw-semibold">
+            Cancelar
+          </a>
+          <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+            {{ mode() === FormModeEnum.CREAR ? 'Guardar Registro' : 'Actualizar Cambios' }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
