@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import {
   PageResponse,
   ProductoTabularDTO,
@@ -36,7 +36,11 @@ export class ProductoService {
       params = params.set('modelo', modelo.trim());
     }
 
-    return this.http.get<PageResponse<ProductoTabularDTO>>(this.apiUrl, { params });
+    return this.http.get<PageResponse<ProductoTabularDTO>>(this.apiUrl, { params }).pipe(
+      // tap(response => {
+      //   console.log('Respuesta del backend:', response);
+      // })
+    );
   }
 
   obtenerPorId(id: number): Observable<ProductoDetailDTO> {

@@ -13,20 +13,23 @@
     <div class="card-body row g-3">
       <div class="col-md-5">
         <label class="form-label small fw-semibold text-muted">Filtrar por Marca</label>
-        <input type="text" class="form-control" placeholder="Ej. Asus, Huawei...">
+        <input type="text" class="form-control" placeholder="Ej. Asus, Huawei..." [ngModel]="marcaFiltro()"
+          (ngModelChange)="marcaFiltro.set(marcaInput.value); paginaActual.set(0)" #marcaInput>
       </div>
       <div class="col-md-5">
         <label class="form-label small fw-semibold text-muted">Filtrar por Modelo</label>
-        <input type="text" class="form-control" placeholder="Ej. TUF, PLO...">
+        <input type="text" class="form-control" placeholder="Ej. TUF, PLO..." [ngModel]="modeloFiltro()"
+          (ngModelChange)="modeloFiltro.set(modeloInput.value); paginaActual.set(0)" #modeloInput>
       </div>
       <div class="col-md-2 d-flex align-items-end">
-        <button class="btn btn-outline-secondary w-100 fw-semibold">Limpiar</button>
+        <button class="btn btn-outline-secondary w-100 fw-semibold" (click)="limpiarFiltros()">Limpiar</button>
       </div>
     </div>
   </div>
 
-  <div class="card border-0 shadow-sm">
+  <div class="card border-0 shadow-sm" *ngIf="pageData() as data">
     <div class="table-responsive">
+
       <table class="table">
         <thead class="">
           <tr>
@@ -41,13 +44,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let p of productosSimulados">
+          <tr *ngFor="let p of data.content">
             <td>#{{ p.idProducto }}</td>
             <td>{{ p.codigo }}</td>
             <td>{{ p.nombre }}</td>
             <td>{{ p.marca }}</td>
             <td>{{ p.modelo }}</td>
-            <td>S/. {{ p.precio | number:'1.2-2' }}</td>
+            <td class="text-center">S/. {{ p.precio | number:'1.2-2' }}</td>
             <td class="text-center">{{ p.stock }} unids</td>
             <td class="text-center pe-3">
               <div class="btn-group btn-group-sm">
@@ -60,7 +63,7 @@
                   <i class="bi bi-pencil-fill"></i>
                 </a>
                 <button class="btn btn-outline-danger" title="Borrado Lógico"
-                (click)="confirmarEliminacion(p.idProducto, p.nombre)">
+                  (click)="confirmarEliminacion(p.idProducto, p.nombre)">
                   <i class="bi bi-trash3-fill"></i>
                 </button>
               </div>
@@ -68,24 +71,37 @@
           </tr>
         </tbody>
       </table>
+
+      <!-- paginacion -->
       <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top-0">
         <div class="small text-muted">
-          Mostrando <span class="fw-semibold">5</span> de <span class="fw-semibold">14</span> registros en total
+          Mostrando <span class="fw-semibold">{{ data.numberOfElements }}</span> de <span class="fw-semibold">{{
+            data.totalElements }}</span> registros en total
         </div>
-        <nav aria-label="Navegación de productos">
+        <nav aria-label="Navegación de productos" *ngIf="data.totalPages > 1">
           <ul class="pagination pagination-sm mb-0">
-            <li class="page-item active" aria-current="page">
-              <span class="page-link">1</span>
+
+            <li class="page-item" [class.disabled]="data.first">
+              <button class="page-link" (click)="irAPagina(paginaActual() - 1)">
+                <i class="bi bi-chevron-left"></i>
+              </button>
             </li>
-            <li class="page-item">
-              <button class="page-link">2</button>
+
+            <li class="page-item" *ngFor="let index of getTotalPaginasArray()"
+              [class.active]="index === paginaActual()">
+              <button class="page-link" (click)="irAPagina(index)">{{ index + 1 }}</button>
             </li>
-            <li class="page-item">
-              <button class="page-link">3</button>
+
+            <li class="page-item" [class.disabled]="data.last">
+              <button class="page-link" (click)="irAPagina(paginaActual() + 1)">
+                <i class="bi bi-chevron-right"></i>
+              </button>
             </li>
+
           </ul>
         </nav>
       </div>
+
     </div>
   </div>
 
