@@ -37,7 +37,6 @@ export class ProductoDetailComponent implements OnInit {
           this.producto.set(data); // Inyectamos la respuesta del SP en el Signal
         },
         error: (err) => {
-          console.error('Error al recuperar auditoría de Oracle:', err);
           Swal.fire('Error', 'No se pudo obtener el detalle de auditoría.', 'error');
           this.router.navigate(['/productos']); // Redirección segura si el ID no existe
         }

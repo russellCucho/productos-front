@@ -44,7 +44,7 @@ export class ProductoListComponent {
         this.pageData.set(response);
       },
       error: (err) => {
-        console.error('Error al traer datos de Oracle:', err);
+        Swal.fire('Error', 'No se pudieron cargar los productos.', 'error');
       }
     });
   }

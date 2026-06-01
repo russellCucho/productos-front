@@ -74,7 +74,6 @@ export class ProductoFormComponent implements OnInit {
         this.productoForm.patchValue(productoData);
       },
       error: (err) => {
-        console.error('Error al recuperar el producto:', err);
         Swal.fire('Error', 'No se pudo cargar la información del producto.', 'error');
         this.router.navigate(['/productos']);
       }
@@ -130,8 +129,7 @@ export class ProductoFormComponent implements OnInit {
           this.router.navigate(['/productos']);
         },
         error: (err) => {
-          console.error(err);
-          Swal.fire('Error', 'No se pudo registrar el producto. Revisa el código único.', 'error');
+          Swal.fire('Error', err.error?.mensaje || 'No se pudo registrar el producto de forma inesperada.', 'error');
         }
       });
 
@@ -163,14 +161,11 @@ export class ProductoFormComponent implements OnInit {
           this.router.navigate(['/productos']);
         },
         error: (err) => {
-          console.error(err);
-          Swal.fire('Error', 'No se pudieron guardar los cambios.', 'error');
+          Swal.fire('Error', err.error?.mensaje || 'No se pudieron guardar los cambios.', 'error');
         }
       });
 
     }
 
-    // Redirigimos de vuelta al listado principal con la tabla actualizada
-    this.router.navigate(['/productos']);
   }
 }
