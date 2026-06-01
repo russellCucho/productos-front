@@ -1,6 +1,6 @@
-# 🎨 Frontend (Angular 17 Standalone)
+# Frontend (Angular 17 Standalone)
 
-## 🛠️ Arquitecture y Tecnologías
+## Arquitecture y Tecnologías
 * **Framework:** Angular 17.3.x (Standalone y Signals).
 * **Estilos y Layout:** Bootstrap 5.3.x (vía CDN).
 * **Iconografía:** Bootstrap Icons (vía CDN).
