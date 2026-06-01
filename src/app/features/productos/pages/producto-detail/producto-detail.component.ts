@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductoDetailDTO } from '../../../../core/interfaces/producto.interface';
 import { ProductoService } from '../../../../core/services/producto.service';
+
+declare const Swal: any; // Por si necesitas alertar un error visualmente
 
 @Component({
   selector: 'app-producto-detail',
@@ -13,6 +15,7 @@ import { ProductoService } from '../../../../core/services/producto.service';
 export class ProductoDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly productService = inject(ProductoService);
+  private readonly router = inject(Router);
 
   // Signal para almacenar la data del producto de forma reactiva
   public producto = signal<ProductoDetailDTO | null>(null);
@@ -29,17 +32,15 @@ export class ProductoDetailComponent implements OnInit {
 
       // Simulación estática del DTO completo de auditoría que viene de Oracle
       // (En la siguiente fase lo cambiaremos por: this.productService.obtenerPorId(id)...)
-      this.producto.set({
-        idProducto: id,
-        codigo: 'PROD-TI-004',
-        nombre: 'Monitor Gamer Asus ROG 24p (Actualizado 2)',
-        marca: 'Asus',
-        modelo: 'ROG Strix',
-        precio: 949.99,
-        stock: 300,
-        estado: 'A', // 'A' = Activo, 'I' = Inactivo
-        fechaCreacion: '2026-05-28T14:30:00.000+00:00',
-        fechaModif: '2026-05-31T20:00:00.000+00:00'
+      this.productService.obtenerPorId(id).subscribe({
+        next: (data) => {
+          this.producto.set(data); // Inyectamos la respuesta del SP en el Signal
+        },
+        error: (err) => {
+          console.error('Error al recuperar auditoría de Oracle:', err);
+          Swal.fire('Error', 'No se pudo obtener el detalle de auditoría.', 'error');
+          this.router.navigate(['/productos']); // Redirección segura si el ID no existe
+        }
       });
     }
   }

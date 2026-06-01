@@ -5,6 +5,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductoCreateDTO, ProductoUpdateDTO } from '../../../../core/interfaces/producto.interface';
 import { ProductoService } from '../../../../core/services/producto.service';
 
+declare const Swal: any;
+
 export enum FormMode {
   CREAR = 'CREAR',
   EDITAR = 'EDITAR'
@@ -17,7 +19,7 @@ export enum FormMode {
   templateUrl: './producto-form.component.html',
 })
 export class ProductoFormComponent implements OnInit {
-private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
   private readonly productService = inject(ProductoService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -61,22 +63,22 @@ private readonly fb = inject(FormBuilder);
       this.productoForm.get('codigo')?.disable();
 
       // Simulamos la carga de datos (luego lo conectamos a tu método obtenerPorId)
-      this.cargarProductoParaEditar();
+      this.cargarProducto(Number(idParam));
     }
   }
 
-  private cargarProductoParaEditar(): void {
-    // Simulación estática para maquetar el formulario precargado
-    const dataSimulada = {
-      codigo: 'PROD-TI-004',
-      nombre: 'Monitor Gamer 24 pulgadas',
-      marca: 'Asus',
-      modelo: 'TUF Gaming',
-      precio: 899.90,
-      stock: 15,
-      estado: 'A'
-    };
-    this.productoForm.patchValue(dataSimulada);
+  private cargarProducto(id: number): void {
+    this.productService.obtenerPorId(id).subscribe({
+      next: (productoData) => {
+        // Estampamos los valores devueltos por el cursor directamente en los inputs
+        this.productoForm.patchValue(productoData);
+      },
+      error: (err) => {
+        console.error('Error al recuperar el producto:', err);
+        Swal.fire('Error', 'No se pudo cargar la información del producto.', 'error');
+        this.router.navigate(['/productos']);
+      }
+    });
   }
 
   /**
@@ -102,12 +104,70 @@ private readonly fb = inject(FormBuilder);
     }
 
     // Extraemos los datos del formulario (incluyendo los deshabilitados como el código)
-    const formRawValues = this.productoForm.getRawValue();
+    const formValues = this.productoForm.getRawValue();
 
     if (this.mode() === FormMode.CREAR) {
-      console.log('Disparando POST al Back con DTO:', formRawValues as ProductoCreateDTO);
+
+      // 2. ENVIAR POST: Registrar nuevo producto
+      const nuevoProducto: ProductoCreateDTO = {
+        codigo: formValues.codigo,
+        nombre: formValues.nombre,
+        marca: formValues.marca,
+        modelo: formValues.modelo,
+        precio: formValues.precio,
+        stock: formValues.stock
+      };
+
+      this.productService.crear(nuevoProducto).subscribe({
+        next: (idGenerado) => {
+          Swal.fire({
+            title: '¡Registrado!',
+            text: `El producto se guardó correctamente con ID #${idGenerado}`,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          });
+          this.router.navigate(['/productos']);
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Error', 'No se pudo registrar el producto. Revisa el código único.', 'error');
+        }
+      });
+
     } else {
-      console.log(`Disparando PUT al Back para el ID ${this.idProducto()}:`, formRawValues as ProductoUpdateDTO);
+
+      // 3. ENVIAR PUT: Actualizar producto existente
+      const id = this.idProducto();
+      if (!id) return;
+
+      const productoEditado: ProductoUpdateDTO = {
+        codigo: formValues.codigo,
+        nombre: formValues.nombre,
+        marca: formValues.marca,
+        modelo: formValues.modelo,
+        precio: formValues.precio,
+        stock: formValues.stock,
+        estado: formValues.estado
+      };
+
+      this.productService.actualizar(id, productoEditado).subscribe({
+        next: () => {
+          Swal.fire({
+            title: '¡Actualizado!',
+            text: 'Los cambios fueron aplicados en la base de datos.',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          });
+          this.router.navigate(['/productos']);
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.fire('Error', 'No se pudieron guardar los cambios.', 'error');
+        }
+      });
+
     }
 
     // Redirigimos de vuelta al listado principal con la tabla actualizada

@@ -6,6 +6,7 @@ export interface ProductoTabularDTO {
   modelo: string;
   precio: number;
   stock: number;
+  estado: string;
 }
 
 export interface ProductoDetailDTO {
